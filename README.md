@@ -1,0 +1,1 @@
+This is just an excuse to experiment with django rest framework, backbone and marionette, not a serious attempt at a web-admin for eatStatic. Please don't install it on a live server as it hasn't even got any authentication!
