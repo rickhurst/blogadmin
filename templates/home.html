@@ -6,25 +6,35 @@
 		<link rel="stylesheet" href="{{ STATIC_URL }}themes/default.css" />
 	</head>
 	<body>
-
-		<div data-role="page" >
-
+		<!-- Initial blank page to transition from -->
+		<div data-role="page"></div>
+		<div id="default-contents"></div><!-- /page -->
+		<script type="text/template" id="post-list-template">
 			<div data-role="header">
-				<h1>My Title</h1>
+				<h1 id="main-title">Posts</h1>
 			</div><!-- /header -->
 
-			<div data-role="content" id="contents">	
-				<p>Hello world</p>		
+			<div data-role="content">	
+				<ul data-role="listview"></ul>	
 			</div><!-- /content -->
-
-		</div><!-- /page -->
-
-		<script type="text/template" id="post-list-template">
-			<ul data-role="listview"></ul>
 		</script>
+
 
 		<script type="text/template" id="post-list-item-template">
 			<a href="#"><%= file_name %></a>
+		</script>
+
+		<div id="post-edit"></div>
+		<script type="text/template" id="post-edit-template">
+			<div data-role="header">
+				<h1 id="main-title">Edit Post</h1>
+			</div><!-- /header -->
+			<div data-role="content" id="contents">	
+				<form>
+					<label for="file_name" class="ui-hidden-accessible">Filename:</label>
+					<input type="text" name="file_name" id="filename" value="<%= file_name %>" placeholder="Filename" />
+				</form>
+			</div>
 		</script>
 
 		<script src="{{ STATIC_URL }}js/jquery-1.8.3.min.js"></script>
@@ -35,9 +45,28 @@
 		<script src="{{ STATIC_URL }}js/json2.js"></script>
 		<script src="{{ STATIC_URL }}js/app.js"></script>
 		<script>
+        $(document).bind("mobileinit", function() {
+            $.mobile.pushStateEnabled = false;
+            $.mobile.ajaxEnabled = false;
+            $.mobile.hashListeningEnabled = false;
+	    });
+	    </script>
+		<script>
 
 		$(document).ready(function(){
-			var posts = new Posts([
+			var postdata = new Posts([
+				new Post({ file_name: 'foo.txt' }),
+				new Post({ file_name: 'bar.txt' }),
+				new Post({ file_name: 'eggs.txt' }),
+				new Post({ file_name: 'foo.txt' }),
+				new Post({ file_name: 'bar.txt' }),
+				new Post({ file_name: 'eggs.txt' }),
+				new Post({ file_name: 'foo.txt' }),
+				new Post({ file_name: 'bar.txt' }),
+				new Post({ file_name: 'eggs.txt' }),
+				new Post({ file_name: 'foo.txt' }),
+				new Post({ file_name: 'bar.txt' }),
+				new Post({ file_name: 'eggs.txt' }),
 				new Post({ file_name: 'foo.txt' }),
 				new Post({ file_name: 'bar.txt' }),
 				new Post({ file_name: 'eggs.txt' })
@@ -45,7 +74,7 @@
 
 			//console.log(posts);
 
-			MyApp.start({posts: posts});
+			MyApp.start({posts: postdata});
 
 
 		});
