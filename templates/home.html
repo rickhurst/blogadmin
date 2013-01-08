@@ -55,12 +55,15 @@
 					<div data-role="fieldcontain">
 						<fieldset data-role="controlgroup">
 							<legend>Select tags</legend>
+							<div id="tag-list"></div>
+							{% comment this is a non-marionette way of adding the tag-list %}
 							<% for(var tag in all_tags){ %>
 							<label for="tags">
 								<input type="checkbox" id="tags1" name="tags" value="<%= all_tags[tag] %>" class="custom" />
 								<%= all_tags[tag] %>
 							</label>
 							<% } %>
+							{% endcomment %}
 							<label for="new-tag">New tag
 								<input type="text" id="new-tag" name="new_tag" value="" />
 							</label>

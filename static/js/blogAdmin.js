@@ -7,11 +7,21 @@ MyApp.module("BlogAdmin", function(BlogAdmin, App, Backbone, Marionette, $_, _) 
         }
     });
 
+    // Models
     Post = Backbone.Model.extend({});
+    
+    Tag = Backbone.Model.extend({});
+
+    // Collections
     Posts = Backbone.Collection.extend({
         model: Post
     });
 
+    Tags = Backbone.Collection.extend({
+        model: Tag
+    });
+
+    // Views
     PostView = Backbone.Marionette.ItemView.extend({
         template: "#post-list-item-template",
         tagName: 'li',
@@ -25,28 +35,8 @@ MyApp.module("BlogAdmin", function(BlogAdmin, App, Backbone, Marionette, $_, _) 
         // },
 
         showPostEdit: function(e){
-
-
             MyApp.vent.trigger("posts:SHOW_EDIT", this.model);
             e.preventDefault();
-            
-            //this.model.set({file_name: 'changed'});
-
-            // var postEdit = new PostEditView({
-            //  model: this.model
-            // });
-
-            //MyApp.postEditRegion.show(postEdit);
-            //$('#contents').trigger('create');
-
-            // rerender the whole composite view and reapply jquery mobile
-            // seems overkill, but jquery mobile gets confused when itemview updates
-            // individual item amongst already initialised stuff
-            //MyApp.mainRegion.show(MyApp.postsView);
-            //$('#contents').trigger('create');
-            
-            // trigger create on parent
-            //$(this.el).closest('#contents').trigger('create');
         },
 
         
@@ -74,16 +64,44 @@ MyApp.module("BlogAdmin", function(BlogAdmin, App, Backbone, Marionette, $_, _) 
     PostEditView = Backbone.Marionette.Layout.extend({
         template: '#post-edit-template',
 
+        regions: {
+            tag_list: '#tag-list'
+        },
+
+        initialize: function(){
+            // loop through global tags and create tag model for each one, 
+            // marking any already in model.tags
+
+            var tag_collection = new Tags(); 
+
+            var model_tags = this.model.get("tags");
+            console.log(model_tags);
+
+            _.each(App.data.all_tags, function(item){
+                var t_selected = false;
+                _.each(model_tags, function(model_tag){
+                    if(model_tag == item){
+                        t_selected = true;
+                    }
+                });
+                var t = new Tag({
+                    tag_name: item,
+                    selected: t_selected
+                });
+                tag_collection.add(t);
+            });
+
+            console.log(tag_collection);
+        },
+
         // overide the builtin serializeData as we want to pass some additional data to the view
         serializeData: function(){
-        	return {
-        		title: this.model.get('title'),
-        		slug: this.model.get('slug'),
-        		body: this.model.get('body'),
-        		date: this.model.get('date'),
-        		tags: this.model.get('tags'),
-        		all_tags: App.data.all_tags
-        	}
+
+            var view_data = this.model.toJSON();
+            view_data.all_tags = App.data.all_tags;
+
+            return view_data;
+
         }
     });
 
