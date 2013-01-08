@@ -3,6 +3,7 @@
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1" /> 
 		<link rel="stylesheet" href="{{ STATIC_URL }}css/jquery.mobile-1.2.0.css" />
+
 		<link rel="stylesheet" href="{{ STATIC_URL }}themes/default.css" />
 	</head>
 	<body>
@@ -21,7 +22,7 @@
 
 
 		<script type="text/template" id="post-list-item-template">
-			<a href="#"><%= file_name %></a>
+			<a href="#"><%= title %></a>
 		</script>
 
 		<div id="post-edit"></div>
@@ -31,8 +32,41 @@
 			</div><!-- /header -->
 			<div data-role="content" id="contents">	
 				<form>
-					<label for="file_name" class="ui-hidden-accessible">Filename:</label>
-					<input type="text" name="file_name" id="filename" value="<%= file_name %>" placeholder="Filename" />
+					<div data-role="fieldcontain">
+						<label for="title" class="ui-hidden-accessible">Title:</label>
+						<input type="text" name="title" id="post-edit-title" value="<%= title %>" placeholder="Title" />
+					</div>
+
+					<div data-role="fieldcontain">
+						<label for="slug" class="ui-hidden-accessible">Slug:</label>
+						<input type="text" name="slug" id="post-edit-slug" value="<%= slug %>" placeholder="Slug" />
+					</div>
+
+					<div data-role="fieldcontain">
+						<label for="date" class="ui-hidden-accessible">Date:</label>
+						<input type="date" name="date" id="post-edit-date" value="<%= date %>" placeholder="Date" />
+					</div>
+
+					<div data-role="fieldcontain">
+						<label for="body" class="ui-hidden-accessible">Body:</label>
+						<textarea name="body"><%= body %></textarea>
+					</div>
+
+					<div data-role="fieldcontain">
+						<fieldset data-role="controlgroup">
+							<legend>Select tags</legend>
+							<% for(var tag in all_tags){ %>
+							<label for="tags">
+								<input type="checkbox" id="tags1" name="tags" value="<%= all_tags[tag] %>" class="custom" />
+								<%= all_tags[tag] %>
+							</label>
+							<% } %>
+							<label for="new-tag">New tag
+								<input type="text" id="new-tag" name="new_tag" value="" />
+							</label>
+						</fieldset>
+					</div>
+
 				</form>
 			</div>
 		</script>
@@ -44,6 +78,7 @@
 		<script src="{{ STATIC_URL }}js/backbone.marionette.min.js"></script>
 		<script src="{{ STATIC_URL }}js/json2.js"></script>
 		<script src="{{ STATIC_URL }}js/app.js"></script>
+		<script src="{{ STATIC_URL }}js/blogAdmin.js"></script>
 		<script>
         $(document).bind("mobileinit", function() {
             $.mobile.pushStateEnabled = false;
@@ -55,26 +90,14 @@
 
 		$(document).ready(function(){
 			var postdata = new Posts([
-				new Post({ file_name: 'foo.txt' }),
-				new Post({ file_name: 'bar.txt' }),
-				new Post({ file_name: 'eggs.txt' }),
-				new Post({ file_name: 'foo.txt' }),
-				new Post({ file_name: 'bar.txt' }),
-				new Post({ file_name: 'eggs.txt' }),
-				new Post({ file_name: 'foo.txt' }),
-				new Post({ file_name: 'bar.txt' }),
-				new Post({ file_name: 'eggs.txt' }),
-				new Post({ file_name: 'foo.txt' }),
-				new Post({ file_name: 'bar.txt' }),
-				new Post({ file_name: 'eggs.txt' }),
-				new Post({ file_name: 'foo.txt' }),
-				new Post({ file_name: 'bar.txt' }),
-				new Post({ file_name: 'eggs.txt' })
+				new Post({ slug: 'foo', date: '2010-09-21', title: 'title 1', body: 'content blah yes', tags:['tag1','tag2'] }),
+				new Post({ slug: 'foobar', date: '2010-09-22', title: 'title 2', body: 'some content with <br /> html tags', tags:['tag1','tag2'] })
 			]);
+			var all_tags = Array('tag1', 'tag2', 'tag3', 'tag4', 'tag5');
 
 			//console.log(posts);
 
-			MyApp.start({posts: postdata});
+			MyApp.start({posts: postdata, all_tags: all_tags});
 
 
 		});
